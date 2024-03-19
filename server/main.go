@@ -11,7 +11,7 @@ func Run() {
 	go func() {
 		server1, _ := server.New(server.WithListenAddr("localhost:5678"), server.TracingMiddleware())
 		server1.ChiRouter().Get("/server1", func(writer http.ResponseWriter, request *http.Request) {
-			body := client.Get(request, "jaeger-example", "server2", 9101)
+			body := client.Get(request, "client", "server2", 9101)
 			writer.WriteHeader(200)
 			_, _ = writer.Write([]byte(body))
 		})

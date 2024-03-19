@@ -7,14 +7,11 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
-	"github.com/uber/jaeger-client-go"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
-	jaegerlog "github.com/uber/jaeger-client-go/log"
 	"jaeger-example/tracing"
 )
 
 func Get(r *http.Request, serviceName string, path string, port int) string {
-	tracer, closer, _ := createTracer(serviceName)
+	tracer, closer, _ := tracing.CreateTracer(serviceName)
 	defer func(closer io.Closer) {
 		_ = closer.Close()
 	}(closer)
@@ -77,24 +74,4 @@ func getBody(req *http.Request) string {
 	}
 
 	return string(body)
-}
-
-func createTracer(serviceName string) (opentracing.Tracer, io.Closer, error) {
-	var cfg = jaegercfg.Configuration{
-		ServiceName: serviceName,
-		Sampler: &jaegercfg.SamplerConfig{
-			Type:  jaeger.SamplerTypeConst,
-			Param: 1,
-		},
-		Reporter: &jaegercfg.ReporterConfig{
-			LogSpans:          true,
-			CollectorEndpoint: "http://localhost:14268/api/traces",
-		},
-	}
-
-	jLogger := jaegerlog.StdLogger
-	tracer, closer, err := cfg.NewTracer(
-		jaegercfg.Logger(jLogger),
-	)
-	return tracer, closer, err
 }
