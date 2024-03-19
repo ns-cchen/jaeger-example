@@ -12,12 +12,12 @@ JAEGER_SERVICE_NAME=microservice
 
 3. Launch server
 ```shell
- go run main.go
+ go run server_main.go
 ```
 
-4. Send an API
+4. Launch client
 ```shell
-curl http://localhost:5678/server1  
+ go run client_main.go
 ```
 
 5. Go to http://localhost:16686/, you can see the call path
